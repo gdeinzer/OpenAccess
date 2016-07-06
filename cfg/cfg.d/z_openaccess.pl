@@ -1,23 +1,5 @@
-# Open Access config file - enables plugins, adds new eprint fields, adds fields to be included in reports
-
-# Enable open access plugins for reports
-$c->{plugins}{"Screen::Report::OpenAccess"}{params}{disable} = 0;
-$c->{plugins}{"Screen::Report::OpenAccess::Articles"}{params}{disable} = 0;
-$c->{plugins}{"Screen::Report::OpenAccess::ConferenceItems"}{params}{disable} = 0;
-$c->{plugins}{"Export::Report::CSV::OpenAccess"}{params}{disable} = 0;
-
-# Enable the plugin for adding the open access stage to the workflow
-$c->{plugins}{"Screen::EPMC::OpenAccess"}{params}{disable} = 0;
-
-use EPrints::Utils;
-
-#add new OA fields to eprint
+# additional fields to table eprint
 push @{$c->{fields}->{eprint}},
-{
-	name => 'oa_article_ref',
-	type => 'text',
-	multiple => 0,
-},
 
 {
 	name => 'oa_date_of_comp_deposit',
@@ -38,17 +20,9 @@ push @{$c->{fields}->{eprint}},
 },
 {
 	name => 'oa_type',
-	type => 'set',
+	type => 'namedset',
+    	set_name => "oa_type",
     	multiple => 0,
-    	options => [qw(
-		Green
-		Gold
-		No-OA-Option
-		Outwith-Scope
-		Pending
-		No-Green-Option
-		Other
-	)],
 },
 {
 	name => 'oa_pre_payment',
@@ -65,45 +39,74 @@ push @{$c->{fields}->{eprint}},
 },
 {
 	name => 'oa_charge',
-	type => 'float',
+	type => 'text',
 	multiple => 0,
+        sql_index => 0,
 },
+
+{
+	name => 'oa_orig_currency',
+	type => 'compound',
+	fields => [
+	                          {
+	                            sub_name => 'value',
+	                            type => 'float',
+	                            input_boxes => 1,
+	                            multiple => 0,
+	                            sql_index => 0,
+	                          },
+	                          {
+	                            sub_name => 'type',
+	                            type => 'set',
+	                            options => [qw(
+				    		GBP
+						EUR
+						USD
+						)],
+	                            input_boxes => 1,
+	                            multiple => 0,
+	                            sql_index => 0,
+	                          }
+	                    ],
+        multiple => 0,
+},
+
 {
 	name => 'oa_vat',
-	type => 'float',
+	type => 'text',
 	multiple => 0,
+        sql_index => 0,
 },
 {
 	name => 'oa_total_cost',
-	type => 'float',
+	type => 'text',
 	multiple => 0,
+        sql_index => 0,
 },
 {
 	name => 'oa_apc_fund',
-	type => 'set',
-    	multiple => 0,
-    	options => [qw(
-		COAF
-		RCUK
-		MRC-SPHSU
-		Third-Party
-		Gold-Other
-	)],
+	type => 'namedset',
+    	set_name => "apc_fund",
+	multiple => 0,
+        sql_index => 0,
 },
 {
 	name => 'oa_transaction_number',
 	type => 'int',
 	multiple => 1,
-},
-{
-	name => 'oa_finance_project',
-	type => 'int',
-	multiple => 0,
+	input_boxes => 2,
 },
 {
 	name => 'oa_period',
 	type => 'int',
 	multiple => 0,
+        sql_index => 0,
+},
+{
+	name => 'oa_finance_project',
+	type => 'text',
+	multiple => 0,
+    	sql_index => 0,
 },
 {
 	name => 'oa_funder_ack',
@@ -111,8 +114,10 @@ push @{$c->{fields}->{eprint}},
 	options => [qw(
 		Yes
 		No
+        	Partial
 	)],
 	multiple => 0,
+        sql_index => 0,
 },
 {
 	name => 'oa_research_materials_ack',
@@ -122,21 +127,48 @@ push @{$c->{fields}->{eprint}},
 		No
 	)],
 	multiple => 0,
+        sql_index => 0,
+},
+{
+       	name => 'oa_invoice',
+       	type => 'compound',
+       	multiple => 1,
+       	fields => [
+                          {
+                            sub_name => 'cost',
+                            type => 'float',
+                            input_boxes => 1,
+                            multiple => 0,
+                          },
+                          {
+                            sub_name => 'number',
+                            type => 'text',
+                            input_boxes => 1,
+                            multiple => 0,
+                          }
+                    ],
+        input_boxes => 1,
+},
+{
+	name => 'oa_cost_recovery',
+	type => 'boolean',
+    	required => 0,
+    	multiple => 0,
+        sql_index => 0,
+},
+{
+	name => 'oa_sent_to_aa',
+	type => 'boolean',
+    	required => 0,
+    	multiple => 0,
+        sql_index => 0,
 },
 ;
 
-# Add fields to be returned in reports
-
-# The headings used in the fields correspond to those in the Charities Open Access spreadsheet, where applicable
-# Some source mappings - for example 'funding_funder_name' are University of Glasgow specific, but just change these to whatever is used locally
-# e.g. EPrints out the box would just be 'funders'
-
+# add fields to be returned in reports
+# there are extra columns here that are not stored in eprints 
+# but are placeholders for coaf reporting
 my @example_fields = (
-		{
-			target => "EPrint ID",
-			source => "eprint.eprintid",
-			validate => "required",
-		},
 		{
 			target => "Date of initial application by author",
 			source => "eprint.datestamp",
@@ -148,18 +180,17 @@ my @example_fields = (
 					my( $plugin, $objects ) = @_;
 					my $session = $plugin->{'session'}; 
 					my $eprint = $objects->{eprint};
-			        	my $userid = $eprint->get_value( 'userid' );
-			                
-                    	my $depositor_obj = new EPrints::DataObj::User($session, $userid);    #create a user object
-               		my $name = $depositor_obj->get_value( 'name' ); 
-               		my $str = EPrints::Utils::make_name_string($name);
-                    
-					return $str;      		
+			         	my $userid = $eprint->get_value( 'userid' );
+			                my $depositor_obj = new EPrints::DataObj::User($session, $userid);    #create a user object
+               				my $name = $depositor_obj->get_value( 'name' ); 
+               				my $str = EPrints::Utils::make_name_string($name);				
+					return $str;
+               		
 				},
 			validate => "optional",
 		},
 		{
-			target => "University dept.",
+			target => "University department",
 			source => sub {
 					my( $plugin, $objects ) = @_;
 					my $eprint = $objects->{eprint};
@@ -167,21 +198,21 @@ my @example_fields = (
 					my $subject_ds = $plugin->repository->dataset('subject');
 					my $names = [];
 					
-							foreach my $div_id (@{$val})
-							{
-								my $subject = $subject_ds->dataobj( $div_id );
+					foreach my $div_id (@{$val})
+					{
+						my $subject = $subject_ds->dataobj( $div_id );
 					
-								if ($subject)
-								{
-								push @{$names}, EPrints::Utils::tree_to_utf8($subject->render_description); #render_description returns a dom object
-								}
-								else
-								{
-								push @{$names}, $div_id; 
-								}
-							} 
-						my $str = join(' ; ', @{$names});
-						return $str;
+						if ($subject)
+						{
+						push @{$names}, EPrints::Utils::tree_to_utf8($subject->render_description); #render_description returns a dom object
+						}
+						else
+						{
+						push @{$names}, $div_id; 
+						}
+					} 
+					my $str = join(' ; ', @{$names});
+					return $str;
 				},
 			validate => "optional",
 	
@@ -202,7 +233,7 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "Affiliated author", # this returns all the authors. Maybe need to just return host institutions?
+			target => "Affiliated author",
 			source => sub {	
 					my( $plugin, $objects ) = @_;
 					my $eprint = $objects->{eprint};
@@ -210,12 +241,16 @@ my @example_fields = (
 					my $val = [];
 						foreach my $creator (@{$creators})
 						{
-						push @{$val}, EPrints::Utils::make_name_string($creator->{name});
+							my $guid = $creator->{guid}; #check if Glasgow author, i.e. has a guid
+							if(defined $guid)
+							{
+							push @{$val}, EPrints::Utils::make_name_string($creator->{name});
+							}
 						}
 					my $str = join(' ; ', @{$val});
-                    
-					my @arr = @{$val};
-					return $arr[0]; # Just return the first author, return $str if you want them all
+                    			return $str;
+					#my @arr = @{$val};
+					#return $arr[0]; # Just return the first author
 				},
 			validate => "optional",
 		},
@@ -235,7 +270,7 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "Type of publication",
+			target => "Type of Publication",
 			source => "eprint.type",
 			validate => "optional",
 		},
@@ -245,17 +280,21 @@ my @example_fields = (
 			validate => "required",
 		},
 		{
-			target => "Date Accepted for Publication",
-			source =>  sub {
-				my( $plugin, $objects ) = @_;
-				my $eprint = $objects->{eprint};
-				return $eprint->value( 'rioxx2_dateAccepted' );
+			target => "Date of Publication",
+			source => sub {
+					my( $plugin, $objects ) = @_;
+					my $eprint = $objects->{eprint};
+					my $date_type = $eprint->value('date_type');
+					my $date = $eprint->value('date');
+					if ($date_type == 'publication')
+					{
+						return $date;
+					}
 				},
-			validate => "optional",
-		
+			validate => "required",
 		},
 		{
-			target => "Fund that APC is paid from (1)", # COAF spreadhseet has 3 columns for this - so added these to keep the same format
+			target => "Fund that APC is paid from (1)",
 			source => "eprint.oa_apc_fund",
 			validate => "optional",
 		},
@@ -306,7 +345,7 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "Grant Number (1)",
+			target => "Grant ID (1)",
 			source => sub {
 					my( $plugin, $objects ) = @_;
 					my $eprint = $objects->{eprint};
@@ -318,7 +357,7 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "Grant Number (2)",
+			target => "Grant ID (2)",
 			source => sub {
 					my( $plugin, $objects ) = @_;
 					my $eprint = $objects->{eprint};
@@ -330,7 +369,7 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "Grant Number (3)",
+			target => "Grant ID (3)",
 			source => sub {
 					my( $plugin, $objects ) = @_;
 					my $eprint = $objects->{eprint};
@@ -347,7 +386,17 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "APC paid (actual currency)including VAT if charged",
+			target => "APC paid (actual currency) including VAT if charged",
+			source => '',
+			validate => "optional",
+		},
+		{
+			target => "APC paid (actual currency) excluding VAT",
+			source => '',
+			validate => "optional",
+		},
+		{
+			target => "VAT (actual currency)",
 			source => '',
 			validate => "optional",
 		},
@@ -357,12 +406,22 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "APC paid including VAT if charged",
+			target => "APC paid (£) including VAT if charged",
 			source => 'eprint.oa_total_cost',
 			validate => "optional",
 		},
 		{
-			target => "Additional costs",
+			target => "APC paid (£) excluding VAT",
+			source => 'eprint.oa_charge',
+			validate => "optional",
+		},
+		{
+			target => "VAT (£)",
+			source => 'eprint.oa_vat',
+			validate => "optional",
+		},
+		{
+			target => "Additional publication costs",
 			source => '',
 			validate => "optional",
 		},
@@ -377,18 +436,22 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
+			target => "Amount of APC charged to RCUK OA fund (include VAT if charged) in £",
+			source => '',
+			validate => "optional",
+		},
+		{
 			target => "Licence",
 			source => sub {
 					my( $plugin, $objects ) = @_;
 					my $eprint = $objects->{eprint};
 							
 					my $val = [];
-	
 						
 					foreach my $doc ( $eprint->get_all_documents() )
 					{
-						my $content = $doc->value('content');
-						my $format = $doc->value('format');
+                    my $content = $doc->value('content');
+					my $format = $doc->value('format');
 						
 						if ($format eq 'text')
 						{
@@ -397,13 +460,11 @@ my @example_fields = (
 							push @{$val}, $doc->value('license');
 							}
 						}
-					
-					
+                     }
 							
-						my $str = join(' ; ', @{$val});
-						return $str;
-					}
-				},
+					my $str = join(' ; ', @{$val});
+					return $str;
+			},
 			validate => "optional",
 		},
 		{
@@ -417,9 +478,29 @@ my @example_fields = (
 			validate => "optional",
 		},
 		{
-			target => "Notes / Review",
+			target => "Notes",
 			source => "eprint.oa_notes",
 			validate => "optional",					
+		},
+		{
+			target => "EPrint ID",
+			source => "eprint.eprintid",
+			validate => "required",
+		},
+        	{
+			target => "Full Text Status",
+			source => "eprint.full_text_status",
+			validate => "optional",
+		},
+		{
+			target => "Date Accepted for Publication",
+			source =>  sub {
+					my( $plugin, $objects ) = @_;
+					my $eprint = $objects->{eprint};
+					return $eprint->value( 'rioxx2_dateAccepted' );
+				},
+			validate => "optional",
+				
 		},
 		{
 			target => "Research Materials Acknowledgement",
@@ -437,11 +518,6 @@ my @example_fields = (
 			validate => "required",		
 		},
 		{
-			target => "Article Reference",
-			source => "eprint.oa_article_ref",
-			validate => "optional",	
-		},
-		{
 			target => "Date of Compliant Deposit",
 			source => "eprint.oa_date_of_comp_deposit",
 			validate => "required",		
@@ -452,19 +528,14 @@ my @example_fields = (
 			validate => "optional",				
 		},
 		{
+			target => "Paid Date",
+			source => 'eprint.oa_paid_date',
+			validate => "optional",
+		},
+		{
 			target => "Estimated Cost (ex. vat)",
 			source => "eprint.oa_est_cost",
 			validate => "optional",				
-		},
-		{
-			target => "Actual Cost (ex. vat)",
-			source => "eprint.oa_charge",
-			validate => "optional",				
-		},
-		{
-			target => "VAT added",
-			source => 'eprint.oa_vat',
-			validate => "optional",
 		},
 		{
 			target => "Transaction Number",
@@ -482,12 +553,33 @@ my @example_fields = (
 			source => "eprint.oa_finance_project",
 			validate => "optional",		
 		},
+        	{
+			target => "Date Type",
+			source => "eprint.date_type",
+			validate => "optional",
+		},
+        	{
+			target => "Published Online",
+			source => "eprint.published_online",
+			validate => "optional",
+		},
+		{
+			target => "Period",
+			source => "eprint.oa_period",
+			validate => "optional",
+		},
 );
+
+# Enable OA workflow plugin
+$c->{plugins}{"Screen::EPMC::OpenAccess"}{params}{disable} = 0;
+
+
+# Reports
+$c->{plugins}{"Screen::Report::OpenAccess"}{params}{disable} = 0;
+$c->{plugins}{"Screen::Report::OpenAccess::Articles"}{params}{disable} = 0;
+$c->{plugins}{"Export::Report::CSV::OpenAccess"}{params}{disable} = 0;
+
 
 $c->{reports}->{"OpenAccess-articles"}->{fields} = [ map { $_->{target} } @example_fields ];
 $c->{reports}->{"OpenAccess-articles"}->{mappings} = { map { $_->{target} => $_->{source} } @example_fields };
 $c->{reports}->{"OpenAccess-articles"}->{validate} = { map { $_->{target} => $_->{validate} } @example_fields };
-
-$c->{reports}->{"OpenAccess-conf-items"}->{fields} = [ map { $_->{target} } @example_fields ];
-$c->{reports}->{"OpenAccess-conf-items"}->{mappings} = { map { $_->{target} => $_->{source} } @example_fields };
-$c->{reports}->{"OpenAccess-conf-items"}->{validate} = { map { $_->{target} => $_->{validate} } @example_fields };

@@ -23,13 +23,21 @@
 	<epp:phrase id="eprint_fieldname_oa_period">Period</epp:phrase>
 	<epp:phrase id="eprint_fieldname_oa_transaction_number">Transaction Number</epp:phrase>
 	<epp:phrase id="eprint_fieldname_oa_finance_project">Finance Project</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_cost_recovery">Cost Recovery Required</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_sent_to_aa">Sent for Payment</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_invoice">Invoice</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_invoice_cost">Value</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_invoice_number">Number</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_orig_currency">Original Currency</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_orig_currency_value">Value</epp:phrase>
+	<epp:phrase id="eprint_fieldname_oa_orig_currency_type">Type</epp:phrase>
 	
 	
 	<!-- Field Help -->
 	
-	<epp:phrase id="eprint_fieldhelp_oa_pre_payment">Indicate if a pre-payment arrangement was used for the open access cost. Field could be used to avoid double counting pre-payment costs in budgetary analysis. This will default to 'unspecified' until yes or no are selected.</epp:phrase>
+  	<epp:phrase id="eprint_fieldhelp_oa_pre_payment" type="XHTML"><p>Indicate if a pre-payment arrangement was used for the open access cost.</p><p>This field could be used to avoid double counting pre-payment costs in budgetary analysis.</p><p>The value will default to 'unspecified' until 'yes' or 'no' are selected.</p></epp:phrase>
 	<epp:phrase id="eprint_fieldhelp_oa_paid_date" type="XHTML"><p>The official date the the actual cost was paid to the supplier as per the official finance system.</p><p>Not the date the cost was committed or paid on any library serials system.</p></epp:phrase>
-	<epp:phrase id="eprint_fieldhelp_oa_apc_fund">Indicate which budget the cost has been assigned to. This can help with budgetary management.  Select 'Third party' if another organisation is paying the open access costs.  'Gold other' can be used for any paid for open access that does not fall into any of the other categories. This can be explained in the notes field below.</epp:phrase>
+  	<epp:phrase id="eprint_fieldhelp_oa_apc_fund" type="XHTML"><p>Indicate which budget the cost has been assigned to. This can help with budgetary management.</p><p>Select 'Third party' if another organisation is paying the open access costs.</p><p>'Gold other' can be used for any paid for open access that does not fall into any of the other categories, and can be explained in the notes field below.</p></epp:phrase>
 	<epp:phrase id="eprint_fieldhelp_oa_article_ref" type="XHTML"><p>A unique identifier supplied by the publisher. Often found on emails of acceptance.</p><p>This reference number is a useful identifier in the payment process as the official DOI often does not exist at the early stage.</p></epp:phrase>
 	<epp:phrase id="eprint_fieldhelp_oa_date_of_comp_deposit" type="XHTML"></epp:phrase>
 	<epp:phrase id="eprint_fieldhelp_oa_est_cost" type="XHTML"><p>The estimated cost of the open access including VAT at the point where it is agreed to pay for an item but before the invoice has paid out from the official finance system.</p><p>It is not necessary to complete this field if a pre-payment has been set to 'Yes'.</p></epp:phrase>
@@ -41,35 +49,33 @@
 					<td><strong>Type</strong></td>
 					<td><strong>Explanation</strong></td>
 				</tr>
-          		<tr>
-					<td>Green</td>
-					<td>Article will be made freely available without any additional cost.</td>
-				</tr>
-          		<tr>
-					<td>Gold</td>
-					<td>APC to be paid from RCUK block grant.</td>
-				</tr>
 				<tr>
 					<td>No OA Option</td>
 					<td>No open access options available from publisher at time of checking.</td>
-				</tr>
-          		<tr>
-					<td>Outwith Scope</td>
-					<td>E.g. Article was published before 1st April 2013 and therefore does not fit criteria for this funding.</td>
 				</tr>
 				<tr>
 					<td>Pending</td>
 					<td>Decision to be made e.g. await decision from publisher or information from author.</td>
 				</tr>
-		
+				<tr>
+					<td>Outwith Scope</td>
+					<td>E.g. Article was published before 1st April 2013 and therefore does not fit criteria for this funding.</td>
+				</tr>
 				<tr>
 					<td>No Green OA Option</td>
 					<td>There is no free open access route available (if not RCUK funded we cannot facilitate open access by a free route).</td>
 				</tr>
-			
+				<tr>
+					<td>Green</td>
+					<td>Article will be made freely available without any additional cost.</td>
+				</tr>
 				<tr>
 					<td>Other</td>
 					<td>Only use this option where none of the other choices are suitable.</td>
+				</tr>
+				<tr>
+					<td>Gold</td>
+					<td>APC to be paid from RCUK block grant.</td>
 				</tr>
 		</table>
 	</epp:phrase>
@@ -81,15 +87,15 @@
 	<epp:phrase id="eprint_fieldhelp_oa_period">Use this field to enter the period in which the costs were actually paid e.g. 201505.  Some financial reporting is based around period rather than actual pay date.</epp:phrase>
 	<epp:phrase id="eprint_fieldhelp_oa_transaction_number">Enter the finance system transaction number.  There can be more than one transaction per publication.</epp:phrase>
 	<epp:phrase id="eprint_fieldhelp_oa_finance_project">Enter the five digit Finance Project code.</epp:phrase>
+	<epp:phrase id="eprint_fieldhelp_oa_invoice">Enter an invoice value and number.</epp:phrase>
+	<epp:phrase id="eprint_fieldhelp_oa_cost_recovery">Check this box if the cost is being paid from one account but has to be recovered from another.  For example if it is being paid from a pre-payment account funded by RCUK funds but is being recovered from an author's local funds.</epp:phrase>
+	<epp:phrase id="eprint_fieldhelp_oa_sent_to_aa">Check this box to confirm that you have informed the team who are to arrange payment of this cost.</epp:phrase>
 	
 	
 	<!-- Reports -->
 	
-  	<epp:phrase id="Plugin/Screen/Report/OA:title">Open Access</epp:phrase>
-  	<epp:phrase id="Plugin/Screen/Report/OA/open-access-articles:title">Open Access Articles</epp:phrase>
- 	<epp:phrase id="Plugin/Screen/Report/OA/open-access-conf-items:title">Open Access Conference Items</epp:phrase>
-  
-  
+  	<epp:phrase id="Plugin/Screen/Report/OpenAccess:title">Open Access</epp:phrase>
+  	<epp:phrase id="Plugin/Screen/Report/OpenAccess/Articles:title">All Funders: Articles and Conference Items January 2015 onwards</epp:phrase>
 
 	<!-- Field Options -->
 
@@ -98,20 +104,17 @@
 	<epp:phrase id="eprint_fieldopt_oa_pre_payment_No">No</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_apc_fund_COAF">COAF</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_apc_fund_RCUK">RCUK</epp:phrase>
-  	<epp:phrase id="eprint_fieldopt_oa_apc_fund_MRC-SPHSU">MRC-SPHSU</epp:phrase>
-  	<epp:phrase id="eprint_fieldopt_oa_apc_fund_Third-Party">Third-Party</epp:phrase>
-  	<epp:phrase id="eprint_fieldopt_oa_apc_fund_Gold-Other">Gold-Other</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_type_Green">Green</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_type_Gold">Gold</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_type_Other">Other</epp:phrase>
-  	<epp:phrase id="eprint_fieldopt_oa_type_No-OA-Option">No-OA-Option</epp:phrase>
-  	<epp:phrase id="eprint_fieldopt_oa_type_Outwith-Scope">Outwith-Scope</epp:phrase>
-  	<epp:phrase id="eprint_fieldopt_oa_type_Pending">Pending</epp:phrase>
-  	<epp:phrase id="eprint_fieldopt_oa_type_No-Green-Option">No-Green-Option</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_funder_ack_Yes">Yes</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_funder_ack_No">No</epp:phrase>
+  	<epp:phrase id="eprint_fieldopt_oa_funder_ack_Partial">Partial</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_research_materials_ack_Yes">Yes</epp:phrase>
 	<epp:phrase id="eprint_fieldopt_oa_research_materials_ack_No">No</epp:phrase>
+	<epp:phrase id="eprint_fieldopt_oa_orig_currency_type_GBP">GBP</epp:phrase>
+	<epp:phrase id="eprint_fieldopt_oa_orig_currency_type_EUR">EUR</epp:phrase>
+	<epp:phrase id="eprint_fieldopt_oa_orig_currency_type_USD">USD</epp:phrase>
 
 	<epp:phrase id="oa_type_typename_Green">Green</epp:phrase>
 	<epp:phrase id="oa_type_typename_Gold">Gold</epp:phrase>
@@ -122,8 +125,10 @@
 	<epp:phrase id="oa_type_typename_Other">Other</epp:phrase>
 
 	<epp:phrase id="apc_fund_typename_COAF">COAF</epp:phrase>
+	<epp:phrase id="apc_fund_typename_CSO">CSO</epp:phrase>
 	<epp:phrase id="apc_fund_typename_RCUK">RCUK</epp:phrase>
 	<epp:phrase id="apc_fund_typename_MRC-SPHSU">MRC SPHSU</epp:phrase>
+  	<epp:phrase id="apc_fund_typename_MRC-CVR">MRC CVR</epp:phrase>
 	<epp:phrase id="apc_fund_typename_Third-Party">Third Party</epp:phrase>
 	<epp:phrase id="apc_fund_typename_Gold-Other">Gold Other</epp:phrase>
 </epp:phrases>

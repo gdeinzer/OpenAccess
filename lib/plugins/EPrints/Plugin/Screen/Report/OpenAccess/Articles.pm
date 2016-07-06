@@ -22,8 +22,9 @@ sub filters
 
 	my @filters = @{ $self->SUPER::filters || [] };
 
-	push @filters, { meta_fields => [ "type" ], value => 'article' };
-	push @filters, { meta_fields => [ "date" ], value => '2015' };
+	push @filters, { meta_fields => [ 'type' ], value => 'article conference_proceedings', match => 'EQ', merge => 'ANY' };
+	push @filters, { meta_fields => [ "datestamp" ], value => '2015-01-01-' };
+	push @filters, { meta_fields => [ "date" ], value => '2015-' };
 
 	return \@filters;
 }
