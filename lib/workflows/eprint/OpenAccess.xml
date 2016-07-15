@@ -8,25 +8,54 @@
  		</epc:if>
   </flow>
 
-  	<stage name="open_access">
-    		<component type="Field::Multi" collapse="no">
-     	 		<title>Costs</title>
-				<field ref="oa_est_cost"/>
-				<field ref="oa_charge"/>
-				<field ref="oa_vat"/>
-				<field ref="oa_paid_date"/>
-				<field ref="oa_period"/>
-				<field ref="oa_transaction_number"/>
-				<field ref="oa_finance_project"/>
-				<field ref="oa_pre_payment"/>
-				<field ref="oa_apc_fund"/>
-    		</component>
-		<component><field ref="oa_type" required="yes"/></component>
-		<component><field ref="oa_article_ref"/></component>
-		<component><field ref="oa_date_of_comp_deposit"/></component>
-		<component><field ref="oa_funder_ack"/></component>
-		<component><field ref="oa_research_materials_ack"/></component>
-		<component><field ref="oa_notes"/></component>
- 	</stage>
+
+ <stage name="open_access">  
+	
+	  	<component>
+	      		<field ref="oa_type" required="yes"/>
+	  	</component>
+	   
+	  	<component type="Field::Multi" collapse="no">
+	   		<title>Estimated Costs</title>
+	   			<field ref="oa_est_cost"/>
+	   			<field ref="oa_pre_payment"/>
+	   			<field ref="oa_apc_fund"/>
+	   			<field ref="oa_cost_recovery"/>
+	   			<field ref="oa_sent_to_aa"/>	
+	 	</component>
+	  	 
+	  	 <component type="Field::Multi" collapse="no">
+		   	<title>Invoice Details</title>
+		   		<field ref="oa_invoice"/>
+	  	</component>
+	 
+	   	<component type="Field::Multi" collapse="no">
+	   		<title>Actual Costs</title>
+		  		<field ref="oa_charge"/>
+			   	<field ref="oa_vat"/>
+			   	<field ref="oa_paid_date"/>
+			    <field ref="oa_period"/>
+			  	<field ref="oa_transaction_number"/>
+	      		<field ref="oa_finance_project"/>
+	   	</component>
+	     
+	    <!--component collapse="yes">
+	      		<field ref="oa_orig_currency"/>
+	    </component-->
+	     
+	    <!--component collapse="yes">
+	      		<field ref="oa_total_cost"/>
+	    </component-->
+	   	
+	   	<component type="Field::Multi" collapse="no">
+	   	  	<title>Enlighten Team</title>
+		   		<field ref="oa_date_of_comp_deposit"/>
+		   		<field ref="oa_funder_ack"/>
+		  	 	<field ref="oa_research_materials_ack"/>
+	   	</component>
+	   	<component>
+	   		<field ref="oa_notes"/>
+	   	</component>
+</stage>
  	
 </workflow>
