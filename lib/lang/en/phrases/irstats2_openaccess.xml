@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE phrases SYSTEM "entities.dtd">
+
+<epp:phrases xmlns="http://www.w3.org/1999/xhtml" xmlns:epp="http://eprints.org/ep3/phrase" xmlns:epc="http://eprints.org/ep3/control">
+
+<!-- Name of the report -->
+
+<epp:phrase id="lib/irstats2:report:general:main_costs">Open Access</epp:phrase>
+
+<!--Title of report -->
+
+<epp:phrase id="lib/irstats2:report:main_costs">Open Access</epp:phrase>
+
+<!-- Titles of ew reports -->
+
+<epp:phrase id="lib/irstats2/type:paid_articles:archive">Number of paid articles</epp:phrase>
+<epp:phrase id="lib/irstats2/type:oa_total_cost">Amount spent for publications</epp:phrase>
+<epp:phrase id="lib/irstats2:view:top_oa_total_cost">Top expensive articles</epp:phrase>
+<epp:phrase id="lib/irstats2:view:top_oa_total_cost_authors">Money spent for authors</epp:phrase>
+<epp:phrase id="lib/irstats2:view:oa_subjects">Distribution on subjects </epp:phrase>
+<epp:phrase id="lib/irstats2:view:oa_publisher">Distribution on publisher</epp:phrase>
+
+
+</epp:phrases>
+
